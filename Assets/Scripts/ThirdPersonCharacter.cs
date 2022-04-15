@@ -22,7 +22,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		float m_OrigGroundCheckDistance;
 		const float k_Half = 0.5f;
 		float m_TurnAmount;
-		float m_ForwardAmount;
+		public float m_ForwardAmount;
+		public bool isMoving = false;
+		public bool hasPickedObject = false;
 		Vector3 m_GroundNormal;
 		float m_CapsuleHeight;
 		Vector3 m_CapsuleCenter;
@@ -55,16 +57,26 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
 			m_TurnAmount = Mathf.Atan2(move.x, move.z);
 			m_ForwardAmount = move.z;
-			Debug.Log(m_ForwardAmount);
 
 			if (m_ForwardAmount > 0)
 			{
 				m_Rigidbody.velocity = transform.forward * m_ForwardAmount * m_MoveSpeedMultiplier * Time.deltaTime;
-				m_Animator.SetBool("Run", true);
+
+				if (hasPickedObject)
+				{
+					m_Animator.SetBool("Push", true);
+				}
+                else
+                {
+					m_Animator.SetBool("Push", false);
+					m_Animator.SetBool("Run", true);
+                }
+				isMoving = true;
 			}
 			else
             {
 				m_Animator.SetBool("Run", false);
+				isMoving = false;
             }
 
 			ApplyExtraTurnRotation();
