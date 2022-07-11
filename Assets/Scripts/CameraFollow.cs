@@ -21,7 +21,7 @@ public class CameraFollow : MonoBehaviour
     void LateUpdate()
     {
         Vector3 desiredPos = target.position + offset;
-        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, player.isMoving ? time / AnimCurve.Evaluate(timer) : time * 2);
+        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, player.isMoving ? time / AnimCurve.Evaluate(timer) : time);
 
         smoothedPos.y = target.position.y + offset.y;
 
@@ -29,7 +29,7 @@ public class CameraFollow : MonoBehaviour
 
         if (player.isMoving)
         {
-            timer = Time.deltaTime * 10;
+            timer = Time.deltaTime * 15;
         }
         else
         {

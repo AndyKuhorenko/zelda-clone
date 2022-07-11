@@ -5,21 +5,21 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
-    [SerializeField] Button button;
+    [SerializeField] Button pickUpButton;
     [SerializeField] Player player;
 
     private void Start()
     {
-        button.onClick.AddListener(player.HandlePickButtonClick);
+        pickUpButton.onClick.AddListener(player.HandlePickButtonClick);
     }
 
     public void ShowButton()
     {
-        button.gameObject.SetActive(true);
+        pickUpButton.gameObject.SetActive(true);
     }
 
     public void HideButton()
     {
-        button.gameObject.SetActive(false);
+        pickUpButton.gameObject.SetActive(false);
     }
 }

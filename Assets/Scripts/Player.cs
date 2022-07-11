@@ -4,48 +4,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Characters.ThirdPerson;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDataPersistance
 {
     [SerializeField] public Transform destination;
     [SerializeField] public GameUI gameUI;
 
     private ThirdPersonCharacter character;
-    PickUp pickableObject;
-    PickUp takenObject;
+    private Vector3 playerPos;
+
+    Pickable pickableObject;
+    Pickable takenObject;
 
     private void Start()
     {
         character = GetComponent<ThirdPersonCharacter>();
+        transform.position = playerPos;
     }
 
     private void Update()
     {
-        // ProcessRaycast();
-    }
 
-    private void ProcessRaycast()
-    {
-        int layerMask = 1 << 6;
-
-        RaycastHit hit;
-
-        if (Physics.SphereCast(
-            new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z),
-            1f,
-            transform.TransformDirection(Vector3.forward),
-            out hit,
-            0.5f,
-            layerMask))
-        {
-            Debug.Log(true);
-            pickableObject = hit.collider.GetComponent<PickUp>();
-            gameUI.ShowButton();
-        }
-        else
-        {
-            Debug.Log(false);
-            if (takenObject == null) gameUI.HideButton();
-        }
     }
 
     public void HandlePickButtonClick()
@@ -71,7 +49,7 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.layer == 6)
         {
-            pickableObject = other.gameObject.GetComponent<PickUp>();
+            pickableObject = other.gameObject.GetComponent<Pickable>();
             gameUI.ShowButton();
         }
     }
@@ -79,5 +57,15 @@ public class Player : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (takenObject == null) gameUI.HideButton();
+    }
+
+    public void LoadData(GameData data)
+    {
+        playerPos = data.playerPos;
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.playerPos = transform.position;
     }
 }
