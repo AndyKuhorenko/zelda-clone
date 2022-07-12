@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Pickable object should not be placed at Vector3.zero
+// Todo fix position check in LoadData
 public class Pickable : MonoBehaviour, IDataPersistance
 {
     [SerializeField] public Transform destination;
@@ -48,8 +50,6 @@ public class Pickable : MonoBehaviour, IDataPersistance
 
             movables.TryGetValue(id, out position);
 
-            print(position);
-
             if (position != Vector3.zero) transform.position = position;
         }
     }
@@ -62,8 +62,7 @@ public class Pickable : MonoBehaviour, IDataPersistance
         {   
             movables.Remove(id);
         }
-        //print(movables);
-        //print(id);
+
         movables.Add(id, transform.position);
     }
 }

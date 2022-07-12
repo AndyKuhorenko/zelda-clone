@@ -9,21 +9,27 @@ public class Player : MonoBehaviour, IDataPersistance
     [SerializeField] public Transform destination;
     [SerializeField] public GameUI gameUI;
 
-    private ThirdPersonCharacter character;
+    public ThirdPersonCharacter character;
     private Vector3 playerPos;
 
     Pickable pickableObject;
     Pickable takenObject;
 
+    private void Awake()
+    {
+        print("PlayerAwake");
+    }
+
     private void Start()
     {
+        print("PlayerStart");
         character = GetComponent<ThirdPersonCharacter>();
         transform.position = playerPos;
     }
 
     private void Update()
     {
-
+ 
     }
 
     public void HandlePickButtonClick()
@@ -52,6 +58,13 @@ public class Player : MonoBehaviour, IDataPersistance
             pickableObject = other.gameObject.GetComponent<Pickable>();
             gameUI.ShowButton();
         }
+
+        if (other.gameObject.layer == 7)
+        {
+            SceneEntrance sceneEntrance = other.gameObject.GetComponent<SceneEntrance>();
+
+            sceneEntrance.MoveToScene();
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -67,5 +80,10 @@ public class Player : MonoBehaviour, IDataPersistance
     public void SaveData(GameData data)
     {
         data.playerPos = transform.position;
+    }
+
+    public void SetPlayerPos(Vector3 pos)
+    {
+        playerPos = pos;
     }
 }

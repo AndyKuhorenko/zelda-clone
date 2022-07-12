@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class DataPersistanceManager : MonoBehaviour
 {
+    [Header("Debugging")]
+    [SerializeField] private bool initializeDataIfNull = false;
+
+
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
+    [SerializeField] bool useEncryption;
 
     private GameData gameData;
 
@@ -16,21 +22,45 @@ public class DataPersistanceManager : MonoBehaviour
     public static DataPersistanceManager Instance { get; private set; }
 
 
-    private void Start()
-    {
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
-        FindAllDataPersistances();
-        LoadGame();
-    }
-
     private void Awake()
     {
         if (Instance != null)
         {
-            Debug.LogError("Found more than one Data Persistance Manager in scene!");
+            Debug.Log("Found more than one Data Persistance Manager in scene! Destroying newest Manager...");
+            Destroy(gameObject);
+            return;
         }
 
         Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+    }
+
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindAllDataPersistances();
+        LoadGame();
+        print("SceneLoaded");
+    }
+
+    public void OnSceneUnloaded(Scene scene)
+    {
+        SaveGame();
     }
 
     public void NewGame()
@@ -42,10 +72,16 @@ public class DataPersistanceManager : MonoBehaviour
     {
         gameData = dataHandler.Load();
 
+        if (gameData == null && initializeDataIfNull)
+        {
+            NewGame();
+        }
+
+
         if (gameData == null)
         {
-            Debug.Log("No save data was found. Initializing new game.");
-            NewGame();
+            Debug.Log("No save data was found. Start a new game.");
+            return;
         }
 
         foreach (IDataPersistance persistance in dataPersistances)
@@ -58,9 +94,16 @@ public class DataPersistanceManager : MonoBehaviour
     
     public void SaveGame()
     {
+        if (gameData == null)
+        {
+            Debug.LogWarning("No save data was found. New game should be started.");
+            return;
+        }
+
         foreach (IDataPersistance persistance in dataPersistances)
         {
-            persistance.SaveData(gameData);
+            print(persistance.ToString());
+            if (persistance != null) persistance.SaveData(gameData);
         }
 
         dataHandler.Save(gameData);
@@ -71,7 +114,10 @@ public class DataPersistanceManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        SaveGame();
+        if (SceneManager.GetActiveScene().buildIndex > 0)
+        {
+            SaveGame();
+        }
     }
 
     private void FindAllDataPersistances()
@@ -81,10 +127,16 @@ public class DataPersistanceManager : MonoBehaviour
         dataPersistances = new List<IDataPersistance>(dataPersistanceObjects);
     }
 
+    // Works in Editor mode
     public void RemoveSaves()
     {
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
 
         dataHandler.RemoveSaves();
+    }
+
+    public bool HasGameData()
+    {
+        return gameData != null;
     }
 }

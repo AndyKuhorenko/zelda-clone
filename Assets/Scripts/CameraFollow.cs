@@ -3,11 +3,12 @@ using UnityStandardAssets.Characters.ThirdPerson;
 
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] public Transform target;
     [SerializeField] public float time = 10f;
     [SerializeField] public Vector3 offset;
     [SerializeField] public AnimationCurve AnimCurve;
-    private ThirdPersonCharacter player;
+    private Player player;
+
+    private Transform target;
 
     private Vector3 velocity = Vector3.zero;
     private float timer = 0f;
@@ -15,19 +16,20 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        player = target.GetComponent<ThirdPersonCharacter>();
+        player = FindObjectOfType<Player>();
+        target = player.transform;
     }
 
     void LateUpdate()
     {
         Vector3 desiredPos = target.position + offset;
-        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, player.isMoving ? time / AnimCurve.Evaluate(timer) : time);
+        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, player.character.isMoving ? time / AnimCurve.Evaluate(timer) : time);
 
         smoothedPos.y = target.position.y + offset.y;
 
         transform.position = smoothedPos;
 
-        if (player.isMoving)
+        if (player.character.isMoving)
         {
             timer = Time.deltaTime * 15;
         }
