@@ -432,6 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 1560894452}
   buildIndex: 1
+  rotationAfterSpawn: {x: 0, y: 1, z: 0, w: -0.00000004371139}
 --- !u!65 &661499857
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -754,11 +755,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22bbf57ec543cee42a5aa0ec2dd9e457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &853912619 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2384558738536370703, guid: fc223612067669b4aa06f4165d288467, type: 3}
-  m_PrefabInstance: {fileID: 2384558738299567652}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &853912620 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2384558738536370696, guid: fc223612067669b4aa06f4165d288467, type: 3}
@@ -1288,7 +1284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d21ef9f0ba255ec48932d647609ed160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 853912619}
   time: 0.025
   offset: {x: 0, y: 9, z: -5}
   AnimCurve:
@@ -1456,7 +1451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6019551b1dcbb4d9631b5b4b65da98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 853912620}
 --- !u!1 &1899689083
 GameObject:
   m_ObjectHideFlags: 0

@@ -432,6 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 1560894452}
   buildIndex: 2
+  rotationAfterSpawn: {x: 0, y: 1, z: 0, w: -0.00000004371139}
 --- !u!65 &661499857
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1450,7 +1451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6019551b1dcbb4d9631b5b4b65da98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 853912620}
 --- !u!1 &1899689083
 GameObject:
   m_ObjectHideFlags: 0
@@ -1761,10 +1761,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6646157421364592670, guid: 0fc2b3d8333c24a46a75ee95708c92dc, type: 3}
-      propertyPath: initializeDataIfNull
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6646157421364592671, guid: 0fc2b3d8333c24a46a75ee95708c92dc, type: 3}
       propertyPath: m_RootOrder
       value: 6

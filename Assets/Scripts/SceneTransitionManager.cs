@@ -22,10 +22,18 @@ public class SceneTransitionManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        MovePlayerToSpawnPoint();
+    }
+
+    private void Start()
+    {
+        
     }
 
     public void LoadScene(int buildIndex)
     {
+        GameManager.Instance.SetIsPlayerChangesScene(true);
         StartCoroutine(Load(buildIndex));
     }
 
@@ -42,12 +50,16 @@ public class SceneTransitionManager : MonoBehaviour
         MovePlayerToSpawnPoint();
     }
 
+    // Works after player enter scene & when scene is loaded from save
     private void MovePlayerToSpawnPoint()
     {
         SceneEntrance sceneEntrance = FindObjectOfType<SceneEntrance>();
-        
-        Transform spawnPoint = sceneEntrance.GetSpawnPointTransform();
 
-        FindObjectOfType<Player>().SetPlayerPos(spawnPoint.position);
+        Vector3 playerPosition = sceneEntrance.GetSpawnPointPosition();
+        Quaternion playerRotation = sceneEntrance.GetRotationAfterSpawn();
+
+        Player player = FindObjectOfType<Player>();
+        player.SetPlayerPosition(playerPosition);
+        player.SetPlayerRotation(playerRotation);
     }
 }

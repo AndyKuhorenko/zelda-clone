@@ -11,18 +11,14 @@ public class EditModeFunctions : EditorWindow
 
     private void OnGUI()
     {
+        GUILayout.Space(20f);
+
         if (GUILayout.Button("Set movable objects' IDs"))
         {
             SetIDs();
         }
 
-        if (GUILayout.Button(""))
-        {
-        }
-
-        if (GUILayout.Button(""))
-        {
-        }
+        GUILayout.Space(20f);
 
         if (GUILayout.Button("!REMOVE SAVES!"))
         {

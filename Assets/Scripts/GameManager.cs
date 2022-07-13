@@ -1,30 +1,124 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] Player player;
+    [SerializeField] private static GameState currentState = GameState.Start;
+    [SerializeField] private static GameState previousState = GameState.Start;
 
+    private bool isPlayerChangesScene = false;
+    private int sceneToLoad = 1;
 
+    public static GameManager Instance { get; private set; }
+
+    private void Awake()
+    {
+       // print("awwake");
+
+        if (Instance != null)
+        {
+            //Debug.Log("Found more than one GameManager in scene! Destroying newest GameManager...");
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //print("start");
+        //CheckState();
     }
 
-    private void Awake()
+    public void SetState(GameState state)
     {
-        int musicPlayersCount = FindObjectsOfType<GameManager>().Length;
+        previousState = currentState;
 
-        if (musicPlayersCount > 1)
+        currentState = state;
+
+        CheckState();
+    }
+
+    public void SetStateWithoutCheck(GameState state)
+    {
+        previousState = currentState;
+
+        currentState = state;
+    }
+
+    public GameState GetState()
+    {
+        return currentState;
+    }
+
+    public GameState GetPreviousState()
+    {
+        return previousState;
+    }
+
+
+    public void SetIsPlayerChangesScene(bool isChanges)
+    {
+        isPlayerChangesScene = isChanges;
+    }
+
+    public bool GetIsPlayerChangesScene()
+    {
+        return isPlayerChangesScene;
+    }
+
+    public void LoadData(GameData data)
+    {
+        sceneToLoad = data.currentScene;
+        //print(sceneToLoad);
+    }
+
+    public void SaveData(GameData data)
+    {
+        int buildIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (buildIndex != 0) data.currentScene = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    public void ContinueGame()
+    {
+        SceneManager.LoadSceneAsync(sceneToLoad);
+    }
+
+    private void SetActiveState()
+    {
+        SceneManager.LoadSceneAsync(sceneToLoad);
+    }
+
+    private void SetStartState()
+    {
+        SceneManager.LoadSceneAsync(0); // Main menu
+    }
+
+    private void CheckState()
+    {
+        switch (currentState)
         {
-            Destroy(gameObject);
-        }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
+            case GameState.Start:
+                SetStartState();
+                break;
+
+            case GameState.Pause:
+                break;
+
+            case GameState.Active:
+                SetActiveState();
+                break;
+
+            default:
+                return;
         }
     }
 }

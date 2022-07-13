@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DataPersistanceManager : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class DataPersistanceManager : MonoBehaviour
 
     private List<IDataPersistance> dataPersistances;
     private FileDataHandler dataHandler;
+    private GameManager gameManager;
+
+    private string selectedProfileId = "test";
 
     public static DataPersistanceManager Instance { get; private set; }
 
@@ -26,7 +30,7 @@ public class DataPersistanceManager : MonoBehaviour
     {
         if (Instance != null)
         {
-            Debug.Log("Found more than one Data Persistance Manager in scene! Destroying newest Manager...");
+            //Debug.Log("Destroying newest Manager...");
             Destroy(gameObject);
             return;
         }
@@ -36,6 +40,10 @@ public class DataPersistanceManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+    }
+
+    private void Start()
+    {
     }
 
 
@@ -53,14 +61,42 @@ public class DataPersistanceManager : MonoBehaviour
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        gameManager = GameManager.Instance;
+
+        bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
+        //print("SceneLoaded");
+
         FindAllDataPersistances();
+        FindPickables();
+
         LoadGame();
-        print("SceneLoaded");
+        if (isPlayerChangesScene)
+        {
+            gameManager.SetIsPlayerChangesScene(false);
+        }
+        else
+        {
+        }
+    }
+
+    private void FindPickables()
+    {
+        
     }
 
     public void OnSceneUnloaded(Scene scene)
     {
+        bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
+        //print("SceneUnLoaded");
+
         SaveGame();
+        if (isPlayerChangesScene)
+        {
+
+        }
+        else
+        {
+        }
     }
 
     public void NewGame()
@@ -70,7 +106,7 @@ public class DataPersistanceManager : MonoBehaviour
 
     public void LoadGame()
     {
-        gameData = dataHandler.Load();
+        gameData = dataHandler.Load(selectedProfileId);
 
         if (gameData == null && initializeDataIfNull)
         {
@@ -89,6 +125,8 @@ public class DataPersistanceManager : MonoBehaviour
             persistance.LoadData(gameData);
         }
 
+        gameManager.LoadData(gameData);
+
         //Debug.Log("Loaded Player position = " + gameData.playerPos.ToString());
     }
     
@@ -102,11 +140,12 @@ public class DataPersistanceManager : MonoBehaviour
 
         foreach (IDataPersistance persistance in dataPersistances)
         {
-            print(persistance.ToString());
-            if (persistance != null) persistance.SaveData(gameData);
+            persistance.SaveData(gameData);
         }
 
-        dataHandler.Save(gameData);
+        gameManager.SaveData(gameData);
+
+        dataHandler.Save(gameData, selectedProfileId);
 
         //Debug.Log("Saved Player position = " + gameData.playerPos.ToString());
     }
@@ -132,11 +171,17 @@ public class DataPersistanceManager : MonoBehaviour
     {
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
 
-        dataHandler.RemoveSaves();
+        dataHandler.RemoveSaves(selectedProfileId);
     }
 
     public bool HasGameData()
     {
+        gameData = dataHandler.Load(selectedProfileId);
         return gameData != null;
+    }
+
+    public Dictionary<string, GameData> GetAllProfilesData()
+    {
+        return dataHandler.LoadAllProfiles();
     }
 }

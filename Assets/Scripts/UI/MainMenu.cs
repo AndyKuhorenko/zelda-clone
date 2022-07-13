@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    [Header("Menu Navigation")]
+    [SerializeField] private SaveSlotsMenu saveSlotsMenu;
+
     [Header("Menu Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueGameButton;
@@ -25,22 +28,33 @@ public class MainMenu : MonoBehaviour
 
     public void OnNewGameClicked()
     {
-        DisableMenuButtons();
+        //DisableMenuButtons();
 
-        DataPersistanceManager.Instance.NewGame();
+        //DataPersistanceManager.Instance.NewGame();
 
-        SceneManager.LoadSceneAsync(1);
+        //GameManager.Instance.SetState(GameState.Active);
+        saveSlotsMenu.ActivateMenu();
     }
 
     public void OnContinueGameClicked()
     {
         DisableMenuButtons();
-        SceneManager.LoadSceneAsync(1);
+        GameManager.Instance.SetState(GameState.Active);
     }
 
     private void DisableMenuButtons()
     {
         newGameButton.interactable = false;
         continueGameButton.interactable = false;
+    }
+
+    public void ActivateMenu()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void DeactivateMenu()
+    {
+        gameObject.SetActive(false);
     }
 }

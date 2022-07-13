@@ -42,27 +42,27 @@ public class Pickable : MonoBehaviour, IDataPersistance
 
     public void LoadData(GameData data)
     {
-        var movables = data.movableObjectsPos;
+        //var movables = data.movableObjectsPos;
 
-        if (movables != null)
-        {
-            Vector3 position;
+        //if (movables != null)
+        //{
+        //    Vector3 position;
 
-            movables.TryGetValue(id, out position);
+        //    movables.TryGetValue(id, out position);
 
-            if (position != Vector3.zero) transform.position = position;
-        }
+        //    if (position != Vector3.zero) transform.position = position;
+        //}
     }
 
     public void SaveData(GameData data)
     {
-        var movables = data.movableObjectsPos;
+        //var movables = data.movableObjectsPos;
 
-        if (movables.ContainsKey(id))
-        {   
-            movables.Remove(id);
-        }
+        //if (movables.ContainsKey(id))
+        //{   
+        //    movables.Remove(id);
+        //}
 
-        movables.Add(id, transform.position);
+        //movables.Add(id, transform.position);
     }
 }

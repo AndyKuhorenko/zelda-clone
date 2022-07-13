@@ -21,9 +21,9 @@ public class FileDataHandler
         this.useEncryption = useEncryption;
     }
 
-    public GameData Load()
+    public GameData Load(string profileId)
     {
-        string fullPath = Path.Combine(dataDirPath, dataFileName);
+        string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
         GameData loadedData = null;
 
         if (File.Exists(fullPath))
@@ -57,9 +57,9 @@ public class FileDataHandler
 
     }
 
-    public void Save(GameData data)
+    public void Save(GameData data, string profileId)
     {
-        string fullPath = Path.Combine(dataDirPath, dataFileName);
+        string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
 
         try
         {
@@ -86,10 +86,45 @@ public class FileDataHandler
         }
     }
 
-
-    public void RemoveSaves()
+    public Dictionary<string, GameData> LoadAllProfiles()
     {
-        string fullPath = Path.Combine(dataDirPath, dataFileName);
+        Dictionary<string, GameData> profiles = new Dictionary<string, GameData>();
+
+        IEnumerable<DirectoryInfo> directoryInfos = new DirectoryInfo(dataDirPath).EnumerateDirectories();
+
+        foreach (DirectoryInfo directoryInfo in directoryInfos)
+        {
+            string profileId = directoryInfo.Name;
+
+            string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
+
+            if (!File.Exists(fullPath))
+            {
+                Debug.LogWarning("Skip directory without data");
+                continue;
+            }
+
+
+            GameData profileData = Load(profileId);
+
+            if (profileData != null)
+            {
+                profiles.Add(profileId, profileData);
+            }
+            else
+            {
+                Debug.LogError("Error occured during profile load. ProfileId:" + profileId);
+            }
+        }
+
+
+        return profiles;
+    }
+
+
+    public void RemoveSaves(string profileId)
+    {
+        string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
 
         try
         {

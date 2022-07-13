@@ -6,6 +6,7 @@ public class SceneEntrance : MonoBehaviour
 {
     [SerializeField] private GameObject spawnPoint;
     [SerializeField] private int buildIndex;
+    [SerializeField] private Quaternion rotationAfterSpawn;
 
     private SceneTransitionManager sceneTransition;
 
@@ -14,9 +15,14 @@ public class SceneEntrance : MonoBehaviour
         sceneTransition = SceneTransitionManager.Instance;
     }
 
-    public Transform GetSpawnPointTransform()
+    public Vector3 GetSpawnPointPosition()
     {
-        return spawnPoint.transform;
+        return spawnPoint.transform.position;
+    }
+
+    public Quaternion GetRotationAfterSpawn()
+    {
+        return rotationAfterSpawn;
     }
 
     public void MoveToScene()

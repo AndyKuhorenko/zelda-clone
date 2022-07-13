@@ -10,21 +10,20 @@ public class Player : MonoBehaviour, IDataPersistance
     [SerializeField] public GameUI gameUI;
 
     public ThirdPersonCharacter character;
-    private Vector3 playerPos;
+    private Vector3 startPosition;
 
     Pickable pickableObject;
     Pickable takenObject;
 
     private void Awake()
     {
-        print("PlayerAwake");
+        //print("PlayerAwake");
     }
 
     private void Start()
     {
-        print("PlayerStart");
         character = GetComponent<ThirdPersonCharacter>();
-        transform.position = playerPos;
+        transform.position = startPosition;
     }
 
     private void Update()
@@ -74,16 +73,22 @@ public class Player : MonoBehaviour, IDataPersistance
 
     public void LoadData(GameData data)
     {
-        playerPos = data.playerPos;
+        //playerPos = data.playerPos;
     }
 
     public void SaveData(GameData data)
     {
-        data.playerPos = transform.position;
+        //data.playerPos = transform.position;
     }
 
-    public void SetPlayerPos(Vector3 pos)
+    public void SetPlayerPosition(Vector3 pos)
     {
-        playerPos = pos;
+        startPosition = pos;
+        transform.position = startPosition;
+    }
+
+    public void SetPlayerRotation(Quaternion rot)
+    {
+        transform.rotation = rot;
     }
 }

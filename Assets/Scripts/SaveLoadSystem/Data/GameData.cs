@@ -9,6 +9,8 @@ public class GameData
 
     public SerializableDictionary<string, Vector3> movableObjectsPos;
 
+    public int currentScene;
+
 
     // Todo refactor initialization
     public GameData()
@@ -16,5 +18,7 @@ public class GameData
         playerPos = new Vector3(0, 0, 0);
 
         movableObjectsPos = new SerializableDictionary<string, Vector3>();
+
+        currentScene = 1;
     }
 }
