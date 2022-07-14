@@ -10,10 +10,14 @@ public class DataPersistanceManager : MonoBehaviour
     [Header("Debugging")]
     [SerializeField] private bool initializeDataIfNull = false;
 
+    [SerializeField] private bool isDataPersistanceDisabled = false;
+
 
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
     [SerializeField] bool useEncryption;
+
+    private bool isNewGameStart = false;
 
     private GameData gameData;
 
@@ -21,7 +25,7 @@ public class DataPersistanceManager : MonoBehaviour
     private FileDataHandler dataHandler;
     private GameManager gameManager;
 
-    private string selectedProfileId = "test";
+    private string selectedProfileId = "";
 
     public static DataPersistanceManager Instance { get; private set; }
 
@@ -39,11 +43,16 @@ public class DataPersistanceManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
+        if (isDataPersistanceDisabled) Debug.LogWarning("Data persistance is disabled!");
+
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+        selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
+        //print(selectedProfileId);
     }
 
     private void Start()
     {
+        gameManager = GameManager.Instance;
     }
 
 
@@ -61,62 +70,64 @@ public class DataPersistanceManager : MonoBehaviour
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        gameManager = GameManager.Instance;
-
-        bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
-        //print("SceneLoaded");
+        //bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
+        if (isNewGameStart)
+        {
+            isNewGameStart = false;
+            return;
+        }
 
         FindAllDataPersistances();
-        FindPickables();
-
         LoadGame();
-        if (isPlayerChangesScene)
-        {
-            gameManager.SetIsPlayerChangesScene(false);
-        }
-        else
-        {
-        }
-    }
 
-    private void FindPickables()
-    {
-        
+        //if (isPlayerChangesScene)
+        //{
+        //    gameManager.SetIsPlayerChangesScene(false);
+        //}
+        //else
+        //{
+        //}
     }
 
     public void OnSceneUnloaded(Scene scene)
     {
-        bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
+        //bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
         //print("SceneUnLoaded");
 
-        SaveGame();
-        if (isPlayerChangesScene)
-        {
+        if (SceneManager.GetActiveScene().buildIndex != 0) SaveGame();
+        //if (isPlayerChangesScene)
+        //{
 
-        }
-        else
-        {
-        }
+        //}
+        //else
+        //{
+        //}
     }
 
     public void NewGame()
     {
+        print("new game");
         gameData = new GameData();
+        gameManager.SetGameData(gameData);
+
+        isNewGameStart = true;
     }
 
     public void LoadGame()
     {
+        if (isDataPersistanceDisabled) return;
+
         gameData = dataHandler.Load(selectedProfileId);
 
-        if (gameData == null && initializeDataIfNull)
-        {
-            NewGame();
-        }
-
+        // Debug
+        //if (gameData == null && initializeDataIfNull)
+        //{
+        //    NewGame();
+        //}
 
         if (gameData == null)
         {
-            Debug.Log("No save data was found. Start a new game.");
+            Debug.Log("No save data was found at profile " + selectedProfileId + " Start a new game.");
             return;
         }
 
@@ -125,16 +136,19 @@ public class DataPersistanceManager : MonoBehaviour
             persistance.LoadData(gameData);
         }
 
-        gameManager.LoadData(gameData);
-
+        gameManager = GameManager.Instance;
+        gameManager.SetGameData(gameData);
+        Debug.Log("Loaded profile: " + selectedProfileId);
         //Debug.Log("Loaded Player position = " + gameData.playerPos.ToString());
     }
     
     public void SaveGame()
     {
+        if (isDataPersistanceDisabled) return;
+
         if (gameData == null)
         {
-            Debug.LogWarning("No save data was found. New game should be started.");
+            Debug.LogWarning("No save data was found.");
             return;
         }
 
@@ -143,11 +157,13 @@ public class DataPersistanceManager : MonoBehaviour
             persistance.SaveData(gameData);
         }
 
-        gameManager.SaveData(gameData);
+        gameManager.SaveGameData(gameData);
+
+        gameData.lastUpdated = DateTime.Now.ToBinary();
 
         dataHandler.Save(gameData, selectedProfileId);
 
-        //Debug.Log("Saved Player position = " + gameData.playerPos.ToString());
+        Debug.Log("Game Saved...");
     }
 
 
@@ -166,13 +182,42 @@ public class DataPersistanceManager : MonoBehaviour
         dataPersistances = new List<IDataPersistance>(dataPersistanceObjects);
     }
 
+    #region Debug
     // Works in Editor mode
     public void RemoveSaves()
     {
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
 
-        dataHandler.RemoveSaves(selectedProfileId);
+        var profiles = dataHandler.LoadAllProfiles();
+
+        foreach (var profile in profiles)
+        {
+            dataHandler.RemoveSaves(profile.Key);
+        }
+
+        dataHandler = null;
     }
+
+    public void RemoveSaveByProfileId(string profileId)
+    {
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+
+        dataHandler.RemoveSaves(profileId);
+
+        dataHandler = null;
+    }
+
+    public Dictionary<string, GameData> GetAllProfilesDataInEditor()
+    {
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+
+        var profiles = dataHandler.LoadAllProfiles();
+
+        dataHandler = null;
+
+        return profiles;
+    }
+    #endregion // Debug
 
     public bool HasGameData()
     {
@@ -183,5 +228,11 @@ public class DataPersistanceManager : MonoBehaviour
     public Dictionary<string, GameData> GetAllProfilesData()
     {
         return dataHandler.LoadAllProfiles();
+    }
+
+    public void ChangeSelectedProfileId(string newProfileId)
+    {
+        selectedProfileId = newProfileId;
+        LoadGame();
     }
 }

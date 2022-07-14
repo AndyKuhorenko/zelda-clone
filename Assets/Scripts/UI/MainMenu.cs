@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
-public class MainMenu : MonoBehaviour
+public class MainMenu : Menu
 {
     [Header("Menu Navigation")]
     [SerializeField] private SaveSlotsMenu saveSlotsMenu;
@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     [Header("Menu Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueGameButton;
+    [SerializeField] private Button loadGameButton;
 
 
     private void Start()
@@ -23,17 +24,20 @@ public class MainMenu : MonoBehaviour
         if (!DataPersistanceManager.Instance.HasGameData())
         {
             continueGameButton.interactable = false;
+            loadGameButton.interactable = false;
         }
     }
 
     public void OnNewGameClicked()
     {
-        //DisableMenuButtons();
+        saveSlotsMenu.ActivateMenu(false);
+        DeactivateMenu();
+    }
 
-        //DataPersistanceManager.Instance.NewGame();
-
-        //GameManager.Instance.SetState(GameState.Active);
-        saveSlotsMenu.ActivateMenu();
+    public void OnLoadGameClicked()
+    {
+        saveSlotsMenu.ActivateMenu(true);
+        DeactivateMenu();
     }
 
     public void OnContinueGameClicked()

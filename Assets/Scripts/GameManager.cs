@@ -74,17 +74,17 @@ public class GameManager : MonoBehaviour
         return isPlayerChangesScene;
     }
 
-    public void LoadData(GameData data)
+    public void SetGameData(GameData data)
     {
         sceneToLoad = data.currentScene;
         //print(sceneToLoad);
     }
 
-    public void SaveData(GameData data)
+    public void SaveGameData(GameData data)
     {
         int buildIndex = SceneManager.GetActiveScene().buildIndex;
 
-        if (buildIndex != 0) data.currentScene = SceneManager.GetActiveScene().buildIndex;
+        data.currentScene = buildIndex;
     }
 
     public void ContinueGame()

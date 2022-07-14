@@ -23,6 +23,8 @@ public class FileDataHandler
 
     public GameData Load(string profileId)
     {
+        if (profileId == null) return null;
+
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
         GameData loadedData = null;
 
@@ -59,6 +61,8 @@ public class FileDataHandler
 
     public void Save(GameData data, string profileId)
     {
+        if (profileId == null) return;
+
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
 
         try
@@ -121,6 +125,35 @@ public class FileDataHandler
         return profiles;
     }
 
+    public string GetMostRecentlyUpdatedProfileId()
+    {
+        string mostRecentProfileId = null;
+
+        var profiles = LoadAllProfiles();
+
+        foreach (KeyValuePair<string, GameData> pair in profiles)
+        {
+            string profileId = pair.Key;
+            GameData gameData = pair.Value;
+
+            if (gameData == null) continue;
+
+            if (mostRecentProfileId == null)
+            {
+                mostRecentProfileId = profileId;
+            }
+            else
+            {
+                DateTime mostRecentDateTime = DateTime.FromBinary(profiles[mostRecentProfileId].lastUpdated);
+                DateTime newSaveTime = DateTime.FromBinary(gameData.lastUpdated);
+
+                if (newSaveTime > mostRecentDateTime) mostRecentProfileId = profileId;
+            }
+        }
+
+        return mostRecentProfileId;
+    }
+
 
     public void RemoveSaves(string profileId)
     {
@@ -130,11 +163,11 @@ public class FileDataHandler
         {
             File.Delete(fullPath);
 
-            Debug.Log("Saves Removed!");
+            Debug.Log("Save Removed!");
         }
         catch (Exception ex)
         {
-            Debug.LogError("Error occured when trying to delete saves at" + fullPath + "\n" + ex);
+            Debug.LogError("Error occured when trying to delete save at" + fullPath + "\n" + ex);
         }
     }
 

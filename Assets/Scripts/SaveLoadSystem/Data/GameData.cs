@@ -5,14 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class GameData
 {
+    public long lastUpdated;
+
     public Vector3 playerPos;
 
     public SerializableDictionary<string, Vector3> movableObjectsPos;
 
     public int currentScene;
 
-
-    // Todo refactor initialization
     public GameData()
     {
         playerPos = new Vector3(0, 0, 0);

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class SaveSlot : MonoBehaviour
@@ -15,9 +16,15 @@ public class SaveSlot : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI sceneIndex;
 
+    private Button slotButton;
+
+    private void Awake()
+    {
+        slotButton = GetComponent<Button>();
+    }
+
     public void SetData(GameData data)
     {
-        print(1);
         if (data == null)
         {
             noDataContent.SetActive(true);
@@ -35,5 +42,10 @@ public class SaveSlot : MonoBehaviour
     public string GetProfileId()
     {
         return profileId;
+    }
+
+    public void SetInteractable(bool interactable)
+    {
+        slotButton.interactable = interactable;
     }
 }
