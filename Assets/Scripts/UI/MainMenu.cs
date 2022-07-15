@@ -15,7 +15,6 @@ public class MainMenu : Menu
     [SerializeField] private Button continueGameButton;
     [SerializeField] private Button loadGameButton;
 
-
     private void Start()
     {
         newGameButton.onClick.AddListener(OnNewGameClicked);

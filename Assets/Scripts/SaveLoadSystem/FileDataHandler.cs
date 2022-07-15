@@ -12,6 +12,8 @@ public class FileDataHandler
 
     private bool useEncryption = false;
 
+    private string backupExtension = ".backup";
+
     private readonly string encryptionWord = "zelda";
 
     public FileDataHandler(string dataDirPath, string dataFileName, bool useEncryption)
@@ -21,7 +23,7 @@ public class FileDataHandler
         this.useEncryption = useEncryption;
     }
 
-    public GameData Load(string profileId)
+    public GameData Load(string profileId, bool allowRestoreFromBackup = true)
     {
         if (profileId == null) return null;
 
@@ -51,7 +53,21 @@ public class FileDataHandler
             }
             catch (Exception ex)
             {
-                Debug.LogError("Error occured when trying to load data from file" + fullPath + "\n" + ex);
+                if (allowRestoreFromBackup)
+                {
+                    Debug.LogWarning("Error occured when trying to load data from file at: " + fullPath + ". Attempting to use backup saves" + "\n" + ex);
+
+                    bool isBackupSuccess = AttemptUseBackup(fullPath);
+
+                    if (isBackupSuccess)
+                    {
+                        loadedData = Load(profileId, false);
+                    }
+                }
+                else // If backup file was corrupted
+                {
+                    Debug.LogError("Error occured when trying to load data from file at: " + fullPath + " and backup didnot work.\n" + ex);
+                }
             }
         }
 
@@ -64,6 +80,7 @@ public class FileDataHandler
         if (profileId == null) return;
 
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
+        string backupFilePath = fullPath + backupExtension;
 
         try
         {
@@ -82,6 +99,18 @@ public class FileDataHandler
                 {
                     writer.Write(dataToStore);
                 }
+            }
+
+            // Save file for backup
+            GameData verifiedGameData = Load(profileId);
+
+            if (verifiedGameData != null)
+            {
+                File.Copy(fullPath, backupFilePath, true);
+            }
+            else
+            {
+                throw new Exception("Save file could not be verified and backup could not be created.");
             }
         }
         catch (Exception ex)
@@ -155,15 +184,22 @@ public class FileDataHandler
     }
 
 
-    public void RemoveSaves(string profileId)
+    public void RemoveSave(string profileId)
     {
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
 
         try
         {
-            File.Delete(fullPath);
+            if (File.Exists(fullPath))
+            {
+                Directory.Delete(Path.GetDirectoryName(fullPath), true);
 
-            Debug.Log("Save Removed!");
+                Debug.Log("Save in profile " + profileId + " removed!");
+            }
+            else
+            {
+                Debug.LogWarning("Trying to delete file at path: " + fullPath + ". But data was not found");
+            }
         }
         catch (Exception ex)
         {
@@ -181,5 +217,34 @@ public class FileDataHandler
         }
 
         return modifiedData;
+    }
+
+    private bool AttemptUseBackup(string fullPath)
+    {
+        bool isSuccess = false;
+
+        string backupFilePath = fullPath + backupExtension;
+
+        try
+        {
+            if (File.Exists(backupFilePath))
+            {
+                File.Copy(backupFilePath, fullPath, true);
+
+                isSuccess = true;
+
+                Debug.LogWarning("Had to use backup save at: " + backupFilePath);
+            }
+            else
+            {
+                throw new Exception("Tried to use backup save, but no backup file exists to use at: " + backupFilePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error occured when trying to use backup file at: " + backupFilePath + "\n" + ex);
+        }
+
+        return isSuccess;
     }
 }

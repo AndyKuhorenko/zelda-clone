@@ -38,6 +38,7 @@ public class EditModeFunctions : EditorWindow
             if (decision)
             {
                 RemoveSaves();
+                GetAllProfileIDs();
             }
             else
             {

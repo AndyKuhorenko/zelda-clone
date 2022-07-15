@@ -34,7 +34,6 @@ public class DataPersistanceManager : MonoBehaviour
     {
         if (Instance != null)
         {
-            //Debug.Log("Destroying newest Manager...");
             Destroy(gameObject);
             return;
         }
@@ -47,7 +46,6 @@ public class DataPersistanceManager : MonoBehaviour
 
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
         selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
-        //print(selectedProfileId);
     }
 
     private void Start()
@@ -59,18 +57,15 @@ public class DataPersistanceManager : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.sceneUnloaded -= OnSceneUnloaded;
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
         if (isNewGameStart)
         {
             isNewGameStart = false;
@@ -79,29 +74,6 @@ public class DataPersistanceManager : MonoBehaviour
 
         FindAllDataPersistances();
         LoadGame();
-
-        //if (isPlayerChangesScene)
-        //{
-        //    gameManager.SetIsPlayerChangesScene(false);
-        //}
-        //else
-        //{
-        //}
-    }
-
-    public void OnSceneUnloaded(Scene scene)
-    {
-        //bool isPlayerChangesScene = gameManager.GetIsPlayerChangesScene();
-        //print("SceneUnLoaded");
-
-        if (SceneManager.GetActiveScene().buildIndex != 0) SaveGame();
-        //if (isPlayerChangesScene)
-        //{
-
-        //}
-        //else
-        //{
-        //}
     }
 
     public void NewGame()
@@ -138,8 +110,7 @@ public class DataPersistanceManager : MonoBehaviour
 
         gameManager = GameManager.Instance;
         gameManager.SetGameData(gameData);
-        Debug.Log("Loaded profile: " + selectedProfileId);
-        //Debug.Log("Loaded Player position = " + gameData.playerPos.ToString());
+        // Debug.Log("Loaded data from profile: " + selectedProfileId);
     }
     
     public void SaveGame()
@@ -192,7 +163,7 @@ public class DataPersistanceManager : MonoBehaviour
 
         foreach (var profile in profiles)
         {
-            dataHandler.RemoveSaves(profile.Key);
+            dataHandler.RemoveSave(profile.Key);
         }
 
         dataHandler = null;
@@ -202,7 +173,7 @@ public class DataPersistanceManager : MonoBehaviour
     {
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
 
-        dataHandler.RemoveSaves(profileId);
+        dataHandler.RemoveSave(profileId);
 
         dataHandler = null;
     }

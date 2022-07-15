@@ -18,6 +18,8 @@ public class SaveSlot : MonoBehaviour
 
     private Button slotButton;
 
+    public bool HasData { get; private set; } = false;
+
     private void Awake()
     {
         slotButton = GetComponent<Button>();
@@ -29,11 +31,15 @@ public class SaveSlot : MonoBehaviour
         {
             noDataContent.SetActive(true);
             dataContent.SetActive(false);
+
+            HasData = false;
         }
         else
         {
             noDataContent.SetActive(false);
             dataContent.SetActive(true);
+
+            HasData = true;
 
             sceneIndex.text = "LEVEL: " + data.currentScene.ToString();
         }

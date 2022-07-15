@@ -10,6 +10,9 @@ public class SaveSlotsMenu : Menu
     [Header("Menu Navigation")]
     [SerializeField] private MainMenu mainMenu;
 
+    [Header("Confirmation popup")]
+    [SerializeField] ConfirmationPopup confirmationPopup;
+
     private SaveSlot[] saveSlots;
 
     [SerializeField] private Button backButton;
@@ -25,14 +28,38 @@ public class SaveSlotsMenu : Menu
     {
         DisableMenuButtons();
 
-        DataPersistanceManager.Instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
-
-        if (!isLoadingGame)
+        if (isLoadingGame)
         {
-            DataPersistanceManager.Instance.NewGame();
+            DataPersistanceManager.Instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
+            GameManager.Instance.SetState(GameState.Active);
         }
+        else if (saveSlot.HasData)
+        {
+            confirmationPopup.ActivateMenu(
+                "Starting a new game with this slot will override the currently saved data. Are you sure?",
+                // Will executed if player select 'YES'
+                () =>
+                {
+                    DataPersistanceManager.Instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
+                    DataPersistanceManager.Instance.NewGame();
+                    GameManager.Instance.SetState(GameState.Active);
+                },
+                // Will executed if player select 'NO'
+                () =>
+                {
+                    // Return to menu
+                    ActivateMenu(false);
 
-        GameManager.Instance.SetState(GameState.Active);
+                    EnableMenuButtons();
+                }
+            );
+        }
+        else
+        {
+            DataPersistanceManager.Instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
+            DataPersistanceManager.Instance.NewGame();
+            GameManager.Instance.SetState(GameState.Active);
+        }
     }
 
     private void DisableMenuButtons()
@@ -43,6 +70,16 @@ public class SaveSlotsMenu : Menu
         }
 
         backButton.interactable = false;
+    }
+
+    private void EnableMenuButtons()
+    {
+        foreach (SaveSlot saveSlot in saveSlots)
+        {
+            saveSlot.SetInteractable(true);
+        }
+
+        backButton.interactable = true;
     }
 
     public void OnBackClicked()
@@ -85,7 +122,7 @@ public class SaveSlotsMenu : Menu
             }
         }
 
-        StartCoroutine(SetFirstSelected(firstSelected));
+        SetFirstSelected(firstSelected.GetComponent<Button>());
     }
 
     public void DeactivateMenu()

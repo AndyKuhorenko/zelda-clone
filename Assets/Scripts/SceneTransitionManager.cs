@@ -14,7 +14,7 @@ public class SceneTransitionManager : MonoBehaviour
     {
         if (Instance != null)
         {
-            Debug.Log("Found more than one TransitionManager in scene! Destroying newest Transition Manager...");
+            //Debug.Log("Found more than one TransitionManager in scene! Destroying newest Transition Manager...");
             Destroy(gameObject);
             return;
         }
@@ -34,6 +34,8 @@ public class SceneTransitionManager : MonoBehaviour
     public void LoadScene(int buildIndex)
     {
         GameManager.Instance.SetIsPlayerChangesScene(true);
+        if (SceneManager.GetActiveScene().buildIndex != 0) DataPersistanceManager.Instance.SaveGame();
+
         StartCoroutine(Load(buildIndex));
     }
 
