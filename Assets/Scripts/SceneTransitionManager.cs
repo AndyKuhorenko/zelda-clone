@@ -41,6 +41,8 @@ public class SceneTransitionManager : MonoBehaviour
 
     public IEnumerator Load(int buildIndex)
     {
+        LoadingScreen.Instance.ShowLoading();
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(buildIndex);
 
         // Wait until the asynchronous scene fully loads
@@ -50,6 +52,8 @@ public class SceneTransitionManager : MonoBehaviour
         }
 
         MovePlayerToSpawnPoint();
+
+        LoadingScreen.Instance.HideLoading();
     }
 
     // Works after player enter scene & when scene is loaded from save

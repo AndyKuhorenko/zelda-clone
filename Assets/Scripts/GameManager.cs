@@ -93,12 +93,21 @@ public class GameManager : MonoBehaviour
 
     private void SetActiveState()
     {
-        SceneManager.LoadSceneAsync(sceneToLoad);
+        StartCoroutine(LoadScene());
     }
 
     private void SetStartState()
     {
         SceneManager.LoadSceneAsync(0); // Main menu
+    }
+
+    private IEnumerator LoadScene()
+    {
+        LoadingScreen.Instance.ShowLoading();
+
+        yield return SceneManager.LoadSceneAsync(sceneToLoad);
+
+        LoadingScreen.Instance.HideLoading();
     }
 
     private void CheckState()
