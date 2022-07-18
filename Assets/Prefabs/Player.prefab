@@ -1484,7 +1484,6 @@ MonoBehaviour:
   m_StationaryTurnSpeed: 180
   m_JumpPower: 12
   m_GravityMultiplier: 2
-  m_RunCycleLegOffset: 0.2
   m_MoveSpeedMultiplier: 200
   m_AnimSpeedMultiplier: 1
   m_GroundCheckDistance: 0.1
@@ -1503,6 +1502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521b611700410be45810047f0a74e899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDebug: 1
 --- !u!114 &2384558738536370696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destination: {fileID: 2384558738208809440}
-  gameUI: {fileID: 0}
+  character: {fileID: 0}
 --- !u!1 &2384558738603900512
 GameObject:
   m_ObjectHideFlags: 0

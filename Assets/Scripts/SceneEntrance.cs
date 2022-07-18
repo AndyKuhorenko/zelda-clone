@@ -9,10 +9,12 @@ public class SceneEntrance : MonoBehaviour
     [SerializeField] private Quaternion rotationAfterSpawn;
 
     private SceneTransitionManager sceneTransition;
+    private GameManager gameManager;
 
     private void Start()
     {
         sceneTransition = SceneTransitionManager.Instance;
+        gameManager = GameManager.Instance;
     }
 
     public Vector3 GetSpawnPointPosition()
@@ -27,6 +29,7 @@ public class SceneEntrance : MonoBehaviour
 
     public void MoveToScene()
     {
-        sceneTransition.LoadScene(buildIndex);
+        gameManager.SetCurrentScene(buildIndex);
+        gameManager.LoadScene();
     }
 }

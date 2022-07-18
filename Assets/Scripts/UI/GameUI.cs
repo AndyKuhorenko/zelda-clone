@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class GameUI : MonoBehaviour
 {
     [SerializeField] Button pickUpButton;
-    [SerializeField] Player player;
+    private Player player;
 
     private void Start()
     {
+        player = FindObjectOfType<Player>();
         pickUpButton.onClick.AddListener(player.HandlePickButtonClick);
     }
 

@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] GameObject loadingCanvas;
+    [SerializeField] TextMeshProUGUI loadingText;
 
     public static LoadingScreen Instance { get; private set; }
 
@@ -21,8 +24,9 @@ public class LoadingScreen : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void ShowLoading()
+    public void ShowLoading(int scene)
     {
+        loadingText.text = $"Loading scene {scene}...";
         loadingCanvas.SetActive(true);
 
         Time.timeScale = 0f;

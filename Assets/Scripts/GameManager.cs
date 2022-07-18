@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private static GameState previousState = GameState.Start;
 
     private bool isPlayerChangesScene = false;
-    private int sceneToLoad = 1;
+    private int currentScene = 1;
+
+    private SceneTransitionManager sceneTransitionManager;
 
     public static GameManager Instance { get; private set; }
 
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
     {
         //print("start");
         //CheckState();
+        sceneTransitionManager = SceneTransitionManager.Instance;
     }
 
     public void SetState(GameState state)
@@ -75,7 +78,7 @@ public class GameManager : MonoBehaviour
 
     public void SetGameData(GameData data)
     {
-        sceneToLoad = data.currentScene;
+        currentScene = data.currentScene;
         //print(sceneToLoad);
     }
 
@@ -88,26 +91,27 @@ public class GameManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        SceneManager.LoadSceneAsync(sceneToLoad);
+        SceneManager.LoadSceneAsync(currentScene);
+    }
+
+    public void SetCurrentScene(int sceneIndex)
+    {
+        currentScene = sceneIndex;
     }
 
     private void SetActiveState()
     {
-        StartCoroutine(LoadScene());
+        LoadScene();
     }
 
-    private void SetStartState()
+    public void SetStartState()
     {
         SceneManager.LoadSceneAsync(0); // Main menu
     }
 
-    private IEnumerator LoadScene()
+    public void LoadScene()
     {
-        LoadingScreen.Instance.ShowLoading();
-
-        yield return SceneManager.LoadSceneAsync(sceneToLoad);
-
-        LoadingScreen.Instance.HideLoading();
+        sceneTransitionManager.LoadScene(currentScene);
     }
 
     private void CheckState()

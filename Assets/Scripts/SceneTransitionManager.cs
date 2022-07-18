@@ -34,6 +34,7 @@ public class SceneTransitionManager : MonoBehaviour
     public void LoadScene(int buildIndex)
     {
         GameManager.Instance.SetIsPlayerChangesScene(true);
+
         if (SceneManager.GetActiveScene().buildIndex != 0) DataPersistanceManager.Instance.SaveGame();
 
         StartCoroutine(Load(buildIndex));
@@ -41,7 +42,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     public IEnumerator Load(int buildIndex)
     {
-        LoadingScreen.Instance.ShowLoading();
+        LoadingScreen.Instance.ShowLoading(buildIndex);
 
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(buildIndex);
 
@@ -61,11 +62,14 @@ public class SceneTransitionManager : MonoBehaviour
     {
         SceneEntrance sceneEntrance = FindObjectOfType<SceneEntrance>();
 
-        Vector3 playerPosition = sceneEntrance.GetSpawnPointPosition();
-        Quaternion playerRotation = sceneEntrance.GetRotationAfterSpawn();
+        if (sceneEntrance != null)
+        {
+            Vector3 playerPosition = sceneEntrance.GetSpawnPointPosition();
+            Quaternion playerRotation = sceneEntrance.GetRotationAfterSpawn();
 
-        Player player = FindObjectOfType<Player>();
-        player.SetPlayerPosition(playerPosition);
-        player.SetPlayerRotation(playerRotation);
+            Player player = FindObjectOfType<Player>();
+            player.SetPlayerPosition(playerPosition);
+            player.SetPlayerRotation(playerRotation);
+        }
     }
 }

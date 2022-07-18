@@ -7,7 +7,7 @@ using UnityStandardAssets.Characters.ThirdPerson;
 public class Player : MonoBehaviour, IDataPersistance
 {
     [SerializeField] public Transform destination;
-    [SerializeField] public GameUI gameUI;
+    private GameUI gameUI;
 
     public ThirdPersonCharacter character;
     private Vector3 startPosition;
@@ -23,6 +23,7 @@ public class Player : MonoBehaviour, IDataPersistance
     private void Start()
     {
         character = GetComponent<ThirdPersonCharacter>();
+        gameUI = FindObjectOfType<GameUI>();
         transform.position = startPosition;
     }
 

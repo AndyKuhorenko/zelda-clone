@@ -126,6 +126,122 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""LeftStick"",
+            ""id"": ""1bc7fb9c-b4ba-4cfd-aac4-43834f47580f"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""d77023b8-0987-4528-b8cd-feaa11be9a7e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""82ac2bc2-0cd6-4da1-b6b4-c43e938d9dd0"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Keyboard"",
+            ""id"": ""43295822-6c24-407f-9e49-8b8f4bbe77e3"",
+            ""actions"": [
+                {
+                    ""name"": ""W"",
+                    ""type"": ""Button"",
+                    ""id"": ""7905f5b7-5028-4c73-a077-0cdc20ec1d95"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""S"",
+                    ""type"": ""Button"",
+                    ""id"": ""172851df-2809-4611-8825-578bf778de05"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""A"",
+                    ""type"": ""Button"",
+                    ""id"": ""31d71aab-2fb1-429e-a179-31c9f36f1f9a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""D"",
+                    ""type"": ""Button"",
+                    ""id"": ""edd2c0a8-36db-4234-869e-7fe820ef1445"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""c68fc972-5945-48b8-9fb5-47ff16ef1a57"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""W"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fc80ee38-dbf6-4593-8bab-efc9965f1f44"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""S"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""757ed08f-4761-4e42-9d67-461b641b2f68"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1dd0a997-71c6-4526-a393-fe40852ad579"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""D"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -140,6 +256,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_RestartGame = m_Debug.FindAction("RestartGame", throwIfNotFound: true);
         m_Debug_GoalAnim = m_Debug.FindAction("GoalAnim", throwIfNotFound: true);
+        // LeftStick
+        m_LeftStick = asset.FindActionMap("LeftStick", throwIfNotFound: true);
+        m_LeftStick_Move = m_LeftStick.FindAction("Move", throwIfNotFound: true);
+        // Keyboard
+        m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
+        m_Keyboard_W = m_Keyboard.FindAction("W", throwIfNotFound: true);
+        m_Keyboard_S = m_Keyboard.FindAction("S", throwIfNotFound: true);
+        m_Keyboard_A = m_Keyboard.FindAction("A", throwIfNotFound: true);
+        m_Keyboard_D = m_Keyboard.FindAction("D", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -302,6 +427,96 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         }
     }
     public DebugActions @Debug => new DebugActions(this);
+
+    // LeftStick
+    private readonly InputActionMap m_LeftStick;
+    private ILeftStickActions m_LeftStickActionsCallbackInterface;
+    private readonly InputAction m_LeftStick_Move;
+    public struct LeftStickActions
+    {
+        private @GameControls m_Wrapper;
+        public LeftStickActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_LeftStick_Move;
+        public InputActionMap Get() { return m_Wrapper.m_LeftStick; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(LeftStickActions set) { return set.Get(); }
+        public void SetCallbacks(ILeftStickActions instance)
+        {
+            if (m_Wrapper.m_LeftStickActionsCallbackInterface != null)
+            {
+                @Move.started -= m_Wrapper.m_LeftStickActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_LeftStickActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_LeftStickActionsCallbackInterface.OnMove;
+            }
+            m_Wrapper.m_LeftStickActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
+            }
+        }
+    }
+    public LeftStickActions @LeftStick => new LeftStickActions(this);
+
+    // Keyboard
+    private readonly InputActionMap m_Keyboard;
+    private IKeyboardActions m_KeyboardActionsCallbackInterface;
+    private readonly InputAction m_Keyboard_W;
+    private readonly InputAction m_Keyboard_S;
+    private readonly InputAction m_Keyboard_A;
+    private readonly InputAction m_Keyboard_D;
+    public struct KeyboardActions
+    {
+        private @GameControls m_Wrapper;
+        public KeyboardActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @W => m_Wrapper.m_Keyboard_W;
+        public InputAction @S => m_Wrapper.m_Keyboard_S;
+        public InputAction @A => m_Wrapper.m_Keyboard_A;
+        public InputAction @D => m_Wrapper.m_Keyboard_D;
+        public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(KeyboardActions set) { return set.Get(); }
+        public void SetCallbacks(IKeyboardActions instance)
+        {
+            if (m_Wrapper.m_KeyboardActionsCallbackInterface != null)
+            {
+                @W.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnW;
+                @W.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnW;
+                @W.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnW;
+                @S.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnS;
+                @S.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnS;
+                @S.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnS;
+                @A.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnA;
+                @A.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnA;
+                @A.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnA;
+                @D.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnD;
+                @D.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnD;
+                @D.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnD;
+            }
+            m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @W.started += instance.OnW;
+                @W.performed += instance.OnW;
+                @W.canceled += instance.OnW;
+                @S.started += instance.OnS;
+                @S.performed += instance.OnS;
+                @S.canceled += instance.OnS;
+                @A.started += instance.OnA;
+                @A.performed += instance.OnA;
+                @A.canceled += instance.OnA;
+                @D.started += instance.OnD;
+                @D.performed += instance.OnD;
+                @D.canceled += instance.OnD;
+            }
+        }
+    }
+    public KeyboardActions @Keyboard => new KeyboardActions(this);
     public interface ITouchActions
     {
         void OnPrimaryTouch(InputAction.CallbackContext context);
@@ -314,5 +529,16 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     {
         void OnRestartGame(InputAction.CallbackContext context);
         void OnGoalAnim(InputAction.CallbackContext context);
+    }
+    public interface ILeftStickActions
+    {
+        void OnMove(InputAction.CallbackContext context);
+    }
+    public interface IKeyboardActions
+    {
+        void OnW(InputAction.CallbackContext context);
+        void OnS(InputAction.CallbackContext context);
+        void OnA(InputAction.CallbackContext context);
+        void OnD(InputAction.CallbackContext context);
     }
 }
