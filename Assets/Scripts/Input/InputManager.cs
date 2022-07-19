@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.InputSystem.Controls;
+using System.Collections;
+using UnityEngine.EventSystems;
 
 [DefaultExecutionOrder(-1)]
 public class InputManager : Singleton<InputManager>
@@ -11,7 +13,7 @@ public class InputManager : Singleton<InputManager>
     private GameControls gameContorls;
 
     private bool isMousePressing = false;
-    private bool isTouchPressing = false;
+    private bool isTapPressing = false;
 
     private Vector2 keyboardMoveAxes = Vector2.zero;
 
@@ -33,8 +35,6 @@ public class InputManager : Singleton<InputManager>
 
     void Start()
     {
-        gameContorls.Touch.PrimaryTouch.started += ctx => StartTouchPrimary(ctx);
-        gameContorls.Touch.PrimaryTouch.canceled += ctx => EndTouchPrimary(ctx);
         gameContorls.Mouse.MouseClick.started += ctx => StartMouseClick(ctx);
         gameContorls.Mouse.MouseClick.canceled += ctx => EndMouseClick(ctx);
 
@@ -117,9 +117,9 @@ public class InputManager : Singleton<InputManager>
         return isMousePressing;
     }
 
-    public bool IsTouchPressing()
+    public bool IsTapPressing()
     {
-        return isTouchPressing;
+        return isTapPressing;
     }
 
     public Vector2 GetJoystickAxes()
@@ -142,13 +142,13 @@ public class InputManager : Singleton<InputManager>
         isMousePressing = false;
     }
 
-    private void StartTouchPrimary(InputAction.CallbackContext ctx)
+    public bool ShotWasPressed()
     {
-        isTouchPressing = true;
+        return gameContorls.Touch.Tap.WasPressedThisFrame() && !EventSystem.current.IsPointerOverGameObject();
     }
 
-    private void EndTouchPrimary(InputAction.CallbackContext ctx)
+    public GameControls GetGameControls()
     {
-        isTouchPressing = false;
+        return gameContorls;
     }
 }

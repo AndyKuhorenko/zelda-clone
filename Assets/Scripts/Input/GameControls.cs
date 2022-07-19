@@ -28,7 +28,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
             ""id"": ""413f61a8-f618-4464-8582-4c342970b565"",
             ""actions"": [
                 {
-                    ""name"": ""PrimaryTouch"",
+                    ""name"": ""Tap"",
                     ""type"": ""Button"",
                     ""id"": ""8066d5e8-0c6f-4df3-887a-ac0b6a654c07"",
                     ""expectedControlType"": ""Button"",
@@ -41,11 +41,11 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9eacce50-c236-46b4-a161-3acea9a5ed10"",
-                    ""path"": ""<Touchscreen>/Press"",
-                    ""interactions"": """",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PrimaryTouch"",
+                    ""action"": ""Tap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -248,7 +248,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
 }");
         // Touch
         m_Touch = asset.FindActionMap("Touch", throwIfNotFound: true);
-        m_Touch_PrimaryTouch = m_Touch.FindAction("PrimaryTouch", throwIfNotFound: true);
+        m_Touch_Tap = m_Touch.FindAction("Tap", throwIfNotFound: true);
         // Mouse
         m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
         m_Mouse_MouseClick = m_Mouse.FindAction("MouseClick", throwIfNotFound: true);
@@ -324,12 +324,12 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     // Touch
     private readonly InputActionMap m_Touch;
     private ITouchActions m_TouchActionsCallbackInterface;
-    private readonly InputAction m_Touch_PrimaryTouch;
+    private readonly InputAction m_Touch_Tap;
     public struct TouchActions
     {
         private @GameControls m_Wrapper;
         public TouchActions(@GameControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @PrimaryTouch => m_Wrapper.m_Touch_PrimaryTouch;
+        public InputAction @Tap => m_Wrapper.m_Touch_Tap;
         public InputActionMap Get() { return m_Wrapper.m_Touch; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -339,16 +339,16 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_TouchActionsCallbackInterface != null)
             {
-                @PrimaryTouch.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnPrimaryTouch;
-                @PrimaryTouch.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnPrimaryTouch;
-                @PrimaryTouch.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnPrimaryTouch;
+                @Tap.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnTap;
+                @Tap.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnTap;
+                @Tap.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnTap;
             }
             m_Wrapper.m_TouchActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @PrimaryTouch.started += instance.OnPrimaryTouch;
-                @PrimaryTouch.performed += instance.OnPrimaryTouch;
-                @PrimaryTouch.canceled += instance.OnPrimaryTouch;
+                @Tap.started += instance.OnTap;
+                @Tap.performed += instance.OnTap;
+                @Tap.canceled += instance.OnTap;
             }
         }
     }
@@ -519,7 +519,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     public KeyboardActions @Keyboard => new KeyboardActions(this);
     public interface ITouchActions
     {
-        void OnPrimaryTouch(InputAction.CallbackContext context);
+        void OnTap(InputAction.CallbackContext context);
     }
     public interface IMouseActions
     {
