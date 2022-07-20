@@ -109,7 +109,17 @@ public class InputManager : Singleton<InputManager>
 
     public Vector2 GetTouchPosition()
     {
-        return Touchscreen.current.position.ReadValue();
+        // If player moves by stick
+        if (gameContorls.Touch.MultiTap.WasPressedThisFrame())
+        {
+            // TODO FIX
+            print(gameContorls.Touch.MultiTap.ReadValue<Vector2>());
+            return gameContorls.Touch.MultiTap.ReadValue<Vector2>();
+        }
+        else
+        {
+            return Touchscreen.current.position.ReadValue();
+        }
     }
 
     public bool IsMouseClicked()
@@ -127,6 +137,7 @@ public class InputManager : Singleton<InputManager>
         return gameContorls.LeftStick.Move.ReadValue<Vector2>();
     }
 
+    // For debug in Editor
     public Vector2 GetKeyboardAxes()
     {
         return keyboardMoveAxes;
@@ -144,7 +155,7 @@ public class InputManager : Singleton<InputManager>
 
     public bool ShotWasPressed()
     {
-        return gameContorls.Touch.Tap.WasPressedThisFrame() && !EventSystem.current.IsPointerOverGameObject();
+        return (gameContorls.Touch.Tap.WasPressedThisFrame() || gameContorls.Touch.MultiTap.WasPressedThisFrame()) && !EventSystem.current.IsPointerOverGameObject();
     }
 
     public GameControls GetGameControls()

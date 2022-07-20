@@ -35,6 +35,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MultiTap"",
+                    ""type"": ""Value"",
+                    ""id"": ""17480cc9-8de9-4b8d-89f2-2d95c3ccca56"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -46,6 +55,17 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Tap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""611228d6-6cc6-4d96-a4ba-23bdbd28c9c1"",
+                    ""path"": ""<Touchscreen>/touch1/tap"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MultiTap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -249,6 +269,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         // Touch
         m_Touch = asset.FindActionMap("Touch", throwIfNotFound: true);
         m_Touch_Tap = m_Touch.FindAction("Tap", throwIfNotFound: true);
+        m_Touch_MultiTap = m_Touch.FindAction("MultiTap", throwIfNotFound: true);
         // Mouse
         m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
         m_Mouse_MouseClick = m_Mouse.FindAction("MouseClick", throwIfNotFound: true);
@@ -325,11 +346,13 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Touch;
     private ITouchActions m_TouchActionsCallbackInterface;
     private readonly InputAction m_Touch_Tap;
+    private readonly InputAction m_Touch_MultiTap;
     public struct TouchActions
     {
         private @GameControls m_Wrapper;
         public TouchActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Tap => m_Wrapper.m_Touch_Tap;
+        public InputAction @MultiTap => m_Wrapper.m_Touch_MultiTap;
         public InputActionMap Get() { return m_Wrapper.m_Touch; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -342,6 +365,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Tap.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnTap;
                 @Tap.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnTap;
                 @Tap.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnTap;
+                @MultiTap.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnMultiTap;
+                @MultiTap.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnMultiTap;
+                @MultiTap.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnMultiTap;
             }
             m_Wrapper.m_TouchActionsCallbackInterface = instance;
             if (instance != null)
@@ -349,6 +375,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Tap.started += instance.OnTap;
                 @Tap.performed += instance.OnTap;
                 @Tap.canceled += instance.OnTap;
+                @MultiTap.started += instance.OnMultiTap;
+                @MultiTap.performed += instance.OnMultiTap;
+                @MultiTap.canceled += instance.OnMultiTap;
             }
         }
     }
@@ -520,6 +549,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     public interface ITouchActions
     {
         void OnTap(InputAction.CallbackContext context);
+        void OnMultiTap(InputAction.CallbackContext context);
     }
     public interface IMouseActions
     {
