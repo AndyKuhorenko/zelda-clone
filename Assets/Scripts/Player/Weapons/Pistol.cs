@@ -1,9 +1,12 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class RocketLauncher : Weapon
+public class Pistol : Weapon
 {
+    [SerializeField] GameObject hitEffect;
+    private int range = 15;
+
     public override IEnumerator Shoot()
     {
         canShoot = false;
@@ -24,6 +27,8 @@ public class RocketLauncher : Weapon
 
             if (Physics.Raycast(ray, out hitData, 100))
             {
+                // Create muzzle flash
+
                 worldPos = hitData.point;
                 Vector3 direction = (worldPos - playerPosition).normalized;
 
@@ -35,8 +40,7 @@ public class RocketLauncher : Weapon
 
                 Vector3 shotStartPos = new Vector3(playerPosition.x, playerPosition.y + 1, playerPosition.z);
 
-                GameObject shot = Instantiate(shotProjectile, shotStartPos, lookRotation); // Self - destroyed
-
+                ProcessRaycast(shotStartPos);
                 ammo--;
             }
 
@@ -45,11 +49,41 @@ public class RocketLauncher : Weapon
         else
         {
             // Todo show notification about 0 ammo
-            print($"You have {ammo} ammo...");
         }
 
         yield return new WaitForSeconds(timeBetweenShots);
 
         canShoot = true;
+    }
+
+    private void ProcessRaycast(Vector3 shotStartPos)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(shotStartPos, thirdPersonUserControl.transform.forward, out hit, range))
+        {
+            CreateHitImpact(hit);
+
+            //EnemyHealth target = hit.transform.GetComponent<EnemyHealth>();
+
+            //if (target)
+            //{
+            //    target.TakeDamage(damage);
+            //}
+            //else
+            //{
+            //    return;
+            //}
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    private void CreateHitImpact(RaycastHit hit)
+    {
+        //
+        GameObject impact = Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(impact, 0.1f);
     }
 }

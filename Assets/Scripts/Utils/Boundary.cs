@@ -1,4 +1,4 @@
-struct Boundary
+public struct Boundary
 {
     public float Up, Down, Left, Right;
 
