@@ -37,7 +37,7 @@ public class RocketLauncher : Weapon
 
                 GameObject shot = Instantiate(shotProjectile, shotStartPos, lookRotation); // Self - destroyed
 
-                ammo--;
+                //ammo--;
             }
 
             thirdPersonUserControl.SetCanMove(true);

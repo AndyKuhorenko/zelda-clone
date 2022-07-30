@@ -1545,7 +1545,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3202077546632078744, guid: 8e01c8849a894ef4b9a87563d9154851, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3205401286036567154, guid: 8e01c8849a894ef4b9a87563d9154851, type: 3}
       propertyPath: m_RootOrder
@@ -1686,6 +1686,10 @@ PrefabInstance:
     - target: {fileID: 3202077546632078744, guid: 0743c41a49953fb4b8296669f51acedb, type: 3}
       propertyPath: m_Name
       value: Shotgun
+      objectReference: {fileID: 0}
+    - target: {fileID: 3202077546632078744, guid: 0743c41a49953fb4b8296669f51acedb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3205401286036567154, guid: 0743c41a49953fb4b8296669f51acedb, type: 3}
       propertyPath: m_RootOrder

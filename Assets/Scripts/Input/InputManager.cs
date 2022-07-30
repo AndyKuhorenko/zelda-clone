@@ -112,9 +112,7 @@ public class InputManager : Singleton<InputManager>
         // If player moves by stick
         if (gameContorls.Touch.MultiTap.WasPressedThisFrame())
         {
-            // TODO FIX
-            print(gameContorls.Touch.MultiTap.ReadValue<Vector2>());
-            return gameContorls.Touch.MultiTap.ReadValue<Vector2>();
+            return Touchscreen.current.touches[1].position.ReadValue();
         }
         else
         {
