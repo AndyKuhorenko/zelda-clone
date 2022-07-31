@@ -7,8 +7,8 @@ public class Weapon : MonoBehaviour
     [SerializeField] protected float timeBetweenShots = 0.25f;
     [SerializeField] protected GameObject debugCube;
     [SerializeField] protected GameObject shotProjectile;
+    [SerializeField] protected ThirdPersonUserControl thirdPersonUserControl;
 
-    protected ThirdPersonUserControl thirdPersonUserControl;
     protected InputManager inputManager;
     protected Camera mainCamera;
 
@@ -17,7 +17,6 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
-        thirdPersonUserControl = FindObjectOfType<ThirdPersonUserControl>();
         mainCamera = Camera.main;
         inputManager = InputManager.Instance;
 

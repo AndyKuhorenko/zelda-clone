@@ -5,7 +5,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] public float time = 10f;
     [SerializeField] public Vector3 offset;
     [SerializeField] public AnimationCurve AnimCurve;
-    private Player player;
+    [SerializeField] private Player player;
 
     private Transform target;
 
@@ -13,7 +13,6 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        player = FindObjectOfType<Player>();
         target = player.transform;
     }
 

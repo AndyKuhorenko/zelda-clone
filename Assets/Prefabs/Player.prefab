@@ -1351,7 +1351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destination: {fileID: 2384558738208809440}
-  character: {fileID: 0}
+  character: {fileID: 2384558738536370700}
 --- !u!1 &2384558738603900512
 GameObject:
   m_ObjectHideFlags: 0
@@ -1539,6 +1539,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2384558737558215649}
     m_Modifications:
+    - target: {fileID: 1380329968113207688, guid: 8e01c8849a894ef4b9a87563d9154851, type: 3}
+      propertyPath: thirdPersonUserControl
+      value: 
+      objectReference: {fileID: 2384558738536370691}
     - target: {fileID: 3202077546632078744, guid: 8e01c8849a894ef4b9a87563d9154851, type: 3}
       propertyPath: m_Name
       value: RocketLauncher
@@ -1759,6 +1763,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7105763357140558711, guid: 0743c41a49953fb4b8296669f51acedb, type: 3}
+      propertyPath: thirdPersonUserControl
+      value: 
+      objectReference: {fileID: 2384558738536370691}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0743c41a49953fb4b8296669f51acedb, type: 3}
 --- !u!4 &7104910084934777121 stripped
@@ -1773,6 +1781,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2384558737558215649}
     m_Modifications:
+    - target: {fileID: 1621305362787689893, guid: 8d688b93c7f087949a1dcf7e97d1088d, type: 3}
+      propertyPath: thirdPersonUserControl
+      value: 
+      objectReference: {fileID: 2384558738536370691}
     - target: {fileID: 3202077546632078744, guid: 8d688b93c7f087949a1dcf7e97d1088d, type: 3}
       propertyPath: m_Name
       value: Pistol

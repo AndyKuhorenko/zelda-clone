@@ -60,6 +60,7 @@ public class SceneTransitionManager : MonoBehaviour
     // Works after player enter scene & when scene is loaded from save
     private void MovePlayerToSpawnPoint()
     {
+        // Todo improve
         SceneEntrance sceneEntrance = FindObjectOfType<SceneEntrance>();
 
         if (sceneEntrance != null)

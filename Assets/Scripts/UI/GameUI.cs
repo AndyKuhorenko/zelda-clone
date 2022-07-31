@@ -6,11 +6,25 @@ using UnityEngine.UI;
 public class GameUI : MonoBehaviour
 {
     [SerializeField] Button pickUpButton;
-    private Player player;
+    [SerializeField] private Player player;
+
+    public static GameUI Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start()
     {
-        player = FindObjectOfType<Player>();
         pickUpButton.onClick.AddListener(player.HandlePickButtonClick);
     }
 
